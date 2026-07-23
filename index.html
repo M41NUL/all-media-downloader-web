@@ -1169,8 +1169,21 @@ document.head.appendChild(installStyle);
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
+  console.log('[PWA] beforeinstallprompt fired — app is installable');
   if (!localStorage.getItem('amd_install_dismissed')) {
     installBar.classList.add('show');
+  } else {
+    console.log('[PWA] Install bar suppressed — previously dismissed (localStorage amd_install_dismissed)');
+  }
+});
+
+// Helpful diagnostics in the console for checking install state manually
+window.addEventListener('load', () => {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isStandalone) {
+    console.log('[PWA] Already running as installed app — install bar will not show.');
+  } else if (!deferredInstallPrompt) {
+    console.log('[PWA] Not installable yet (event not fired). Chrome only fires beforeinstallprompt once per session and may withhold it on repeat visits. Run localStorage.removeItem("amd_install_dismissed") and hard-reload if you dismissed it before.');
   }
 });
 
