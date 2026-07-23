@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>You're Offline — All Media Downloader</title>
+<meta name="theme-color" content="#0A84FF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#000;
+    --accent:#0A84FF;
+    --accent-glow: rgba(10,132,255,.28);
+    --text:#fff;
+    --text3: rgba(235,235,245,.55);
+    --text4: rgba(235,235,245,.3);
+    --green:#30d158;
+    --err:#ff453a;
+    --glass-bg: rgba(28,28,30,0.45);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-border-hi: rgba(255,255,255,0.18);
+    --glass-blur: blur(20px) saturate(180%);
+  }
+  *{
+    margin:0;padding:0;box-sizing:border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+  html,body{ overscroll-behavior-y: contain; }
+  body{
+    background:
+      radial-gradient(circle at 50% 18%, rgba(10,132,255,.10), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:-apple-system,'Inter',BlinkMacSystemFont,sans-serif;
+    min-height:100dvh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:32px 28px;
+  }
+
+  /* ── icon ── */
+  .icon-ring{
+    position:relative;
+    width:96px; height:96px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:28px;
+  }
+  .icon-ring::before, .icon-ring::after{
+    content:'';
+    position:absolute; inset:0;
+    border-radius:50%;
+    border:1px solid var(--accent-glow);
+    animation: ringPulse 2.6s ease-out infinite;
+  }
+  .icon-ring::after{ animation-delay: 1.3s; }
+  @keyframes ringPulse{
+    0%   { transform:scale(.6); opacity:.9; }
+    100% { transform:scale(1.7); opacity:0; }
+  }
+  .icon-box{
+    position:relative; z-index:1;
+    width:76px; height:76px; border-radius:22px;
+    background: linear-gradient(155deg, rgba(28,28,30,.85), rgba(10,10,12,.85));
+    border:1px solid var(--glass-border-hi);
+    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:
+      0 10px 30px rgba(10,132,255,.22),
+      inset 0 1px 0 rgba(255,255,255,.12);
+    animation: breathe 2.8s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{ box-shadow: 0 10px 30px rgba(10,132,255,.18), inset 0 1px 0 rgba(255,255,255,.12); }
+    50%{ box-shadow: 0 10px 40px rgba(10,132,255,.4), inset 0 1px 0 rgba(255,255,255,.16); }
+  }
+  .icon-box i{
+    font-size:30px;
+    background: linear-gradient(180deg, #59c8ff, #0A84FF);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+
+  /* ── text ── */
+  h1{
+    font-family:'Poppins', -apple-system, sans-serif;
+    font-size:21px; font-weight:800; letter-spacing:.2px;
+    margin-bottom:12px;
+  }
+  p{
+    font-size:13.5px; color:var(--text3); line-height:1.65;
+    max-width:290px; margin-bottom:30px;
+  }
+
+  /* ── button (fixed: no white flash on tap) ── */
+  button{
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .retry-btn{
+    position:relative;
+    display:flex; align-items:center; gap:9px;
+    background: linear-gradient(180deg, rgba(10,132,255,.22), rgba(10,132,255,.14));
+    border:1px solid rgba(10,132,255,.4);
+    color:#fff;
+    font-weight:700; font-size:13.5px;
+    padding:13px 26px; border-radius:14px;
+    cursor:pointer; font-family:inherit;
+    box-shadow: 0 6px 20px rgba(10,132,255,.22), inset 0 1px 0 rgba(255,255,255,.1);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    overflow:hidden;
+  }
+  .retry-btn i{ color:#59c8ff; font-size:13px; transition: transform .4s ease; }
+  .retry-btn:active{
+    transform: scale(.96);
+    background: linear-gradient(180deg, rgba(10,132,255,.32), rgba(10,132,255,.2));
+    box-shadow: 0 3px 12px rgba(10,132,255,.28), inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .retry-btn:active i{ transform: rotate(180deg); }
+  .retry-btn.spinning i{ animation: spin .7s linear infinite; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  /* ── status pill ── */
+  .status{
+    margin-top:22px; display:inline-flex; align-items:center; gap:7px;
+    font-size:11px; color:var(--text4); font-weight:500;
+    background: var(--glass-bg); border:1px solid var(--glass-border);
+    padding:7px 13px 7px 11px; border-radius:100px;
+    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    transition: color .25s ease;
+  }
+  .dot{
+    width:6px; height:6px; border-radius:50%;
+    background: var(--err);
+    box-shadow: 0 0 8px rgba(255,69,58,.6);
+    transition: background .25s ease, box-shadow .25s ease;
+  }
+  .dot.online{
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(48,209,88,.6);
+    animation: dotBlink 1.6s ease-in-out infinite;
+  }
+  @keyframes dotBlink{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+  .status.online-text{ color: var(--green); }
+
+  /* ── brand footer ── */
+  .brand{
+    position:fixed; bottom:22px; left:0; right:0;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    font-size:10.5px; color:var(--text4); letter-spacing:.3px;
+  }
+  .brand i{ color: var(--accent); font-size:9px; }
+</style>
+</head>
+<body>
+
+  <div class="icon-ring">
+    <div class="icon-box"><i class="fa-solid fa-wifi"></i></div>
+  </div>
+
+  <h1>You're Offline</h1>
+  <p>No internet connection found. Check your connection and try again — your last visited page may still be cached.</p>
+
+  <button type="button" class="retry-btn" id="retryBtn">
+    <i class="fa-solid fa-rotate-right" id="retryIcon"></i><span id="retryLabel">Try Again</span>
+  </button>
+
+  <div class="status" id="statusPill">
+    <span class="dot" id="statusDot"></span><span id="statusText">Offline</span>
+  </div>
+
+  <div class="brand"><i class="fa-solid fa-circle"></i><span>CODEX-M41NUL</span></div>
+
+  <script>
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    const pill = document.getElementById('statusPill');
+    const retryBtn = document.getElementById('retryBtn');
+    const retryIcon = document.getElementById('retryIcon');
+    const retryLabel = document.getElementById('retryLabel');
+
+    function updateStatus(){
+      const online = navigator.onLine;
+      dot.classList.toggle('online', online);
+      pill.classList.toggle('online-text', online);
+      text.textContent = online ? 'Back online — tap Try Again' : 'Offline';
+    }
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+
+    retryBtn.addEventListener('click', () => {
+      retryBtn.classList.add('spinning');
+      retryLabel.textContent = 'Checking...';
+      retryBtn.disabled = true;
+      setTimeout(() => location.reload(), 350);
+    });
+  </script>
+</body>
+</html>

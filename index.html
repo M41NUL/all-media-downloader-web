@@ -8,8 +8,13 @@
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/M41NUL/all-media-downloader/main/img/bot_profile.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/M41NUL/all-media-downloader/main/img/bot_profile.png">
 <meta name="theme-color" content="#0A84FF">
+<link rel="manifest" href="/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AMD">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root {
@@ -71,21 +76,88 @@ body {
 .header-logo-link:active .header-logo { transform: scale(.93); }
 .header-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .header-title-btn { cursor: pointer; border: none; background: none; padding: 0; display: block; width: 100%; color: inherit; font: inherit; text-align: inherit; }
-.header h1 { font-size: 24px; font-weight: 800; letter-spacing: .3px; line-height: 1.15; margin-bottom: 8px; }
-.header h1 span { color: var(--accent); }
-.header p { font-size: 14px; color: var(--text3); line-height: 1.5; }
+
+/* Stylish header title */
+.header h1 {
+  font-family: 'Orbitron', 'Poppins', -apple-system, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  line-height: 1.35;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.header h1 .h1-main {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--text3);
+  -webkit-text-fill-color: var(--text3);
+}
+.header h1 span.h1-accent {
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #59c8ff 0%, #0A84FF 25%, #ffffff 50%, #0A84FF 75%, #59c8ff 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineText 5s linear infinite;
+  filter: drop-shadow(0 0 14px rgba(10,132,255,.45));
+  position: relative;
+}
+@keyframes shineText {
+  0% { background-position: 0% center; }
+  100% { background-position: 250% center; }
+}
+.header-underline {
+  width: 46px; height: 3px; margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  border-radius: 100px;
+  position: relative;
+  overflow: hidden;
+}
+.header-underline::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  width: 40%;
+  animation: underlineSweep 2.6s ease-in-out infinite;
+}
+@keyframes underlineSweep {
+  0% { transform: translateX(-150%); }
+  100% { transform: translateX(350%); }
+}
+.header p { font-size: 13.5px; color: var(--text3); line-height: 1.5; letter-spacing: .3px; margin-top: 14px; }
+
 .platform-row {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   margin-top: 16px;
 }
+
+/* Breathing glow animation for platform icons */
 .platform-chip {
   display: flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; border-radius: 9px;
   background: var(--glass-bg); border: 1px solid var(--glass-border);
   backdrop-filter: var(--glass-blur-sm);
   -webkit-backdrop-filter: var(--glass-blur-sm);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
   color: var(--text3); font-size: 13px;
+  animation: chipBreathe 2.6s ease-in-out infinite;
+}
+.platform-chip:nth-child(2) { animation-delay: .5s; }
+.platform-chip:nth-child(3) { animation-delay: 1s; }
+@keyframes chipBreathe {
+  0%, 100% {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 rgba(10,132,255,0);
+  }
+  50% {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 14px 3px rgba(10,132,255,.35);
+  }
 }
 
 /* ─── SECTION ─── */
@@ -189,6 +261,22 @@ body {
 .url-hint.error-hint { color: var(--err); }
 .url-hint.error-hint i { color: var(--err); }
 
+/* manual paste fallback (shown when clipboard API fails) */
+.manual-paste-wrap { display: none; padding: 0 16px 14px; }
+.manual-paste-wrap.show { display: block; }
+.manual-paste-box {
+  width: 100%; min-height: 54px; resize: none;
+  background: rgba(0,0,0,0.28); border: 1.5px dashed var(--glass-border-hi);
+  border-radius: 10px; padding: 10px 12px; color: var(--text);
+  font-size: 12.5px; font-family: 'Menlo','Monaco',monospace;
+  outline: none;
+}
+.manual-paste-box::placeholder { color: var(--text4); font-family: 'Inter', sans-serif; }
+.manual-paste-label {
+  font-size: 10.5px; color: var(--text4); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+
 /* ─── CONTROL PANEL ─── */
 .panel-card {
   background: var(--glass-bg); border-radius: var(--radius-lg);
@@ -224,8 +312,15 @@ body {
   border: 1px solid var(--glass-border);
   backdrop-filter: var(--glass-blur-sm);
   -webkit-backdrop-filter: var(--glass-blur-sm);
+  display: flex; align-items: center; justify-content: center;
 }
 .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-fallback {
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: var(--text4); width: 100%; height: 100%;
+}
+.thumb-fallback i { font-size: 28px; opacity: .5; }
+.thumb-fallback span { font-size: 11px; }
 .thumb-duration {
   position: absolute; bottom: 8px; right: 8px;
   background: rgba(0,0,0,.5); font-family: 'Menlo',monospace;
@@ -302,6 +397,15 @@ body {
   display: flex; justify-content: space-between; font-size: 11px;
   color: var(--text3); font-family: 'Menlo','Monaco',monospace;
 }
+.dl-cancel-btn {
+  display: none; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; margin-top: 8px; background: rgba(255,69,58,0.08);
+  border: 1px solid rgba(255,69,58,.25); color: var(--err);
+  border-radius: 9px; padding: 8px; font-size: 11.5px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.dl-cancel-btn.show { display: flex; }
+.dl-cancel-btn:active { opacity: .7; }
 
 /* ─── STATUS ─── */
 .status-box {
@@ -317,6 +421,11 @@ body {
 .status-box.warn { background: var(--accent-dim); border: 1px solid var(--accent-glow); color: #7fc0ff; }
 .status-box.success { background: rgba(48,209,88,.1); border: 1px solid rgba(48,209,88,.3); color: var(--green); }
 .status-box.info { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text3); }
+.status-box .retry-link {
+  margin-left: auto; flex-shrink: 0; background: none; border: none;
+  color: inherit; text-decoration: underline; font-size: 11.5px;
+  font-weight: 700; cursor: pointer; font-family: inherit; padding: 0;
+}
 
 /* ─── FOOTER ─── */
 .footer {
@@ -355,7 +464,7 @@ body {
 @media (max-width: 420px) {
   .header { padding: 32px 16px 0; }
   .header-logo { width: 54px; height: 54px; border-radius: 15px; margin-bottom: 12px; }
-  .header h1 { font-size: 20px; letter-spacing: .1px; }
+  .header h1 { font-size: 21px; letter-spacing: .3px; }
   .header p { font-size: 13px; }
   .platform-row { margin-top: 12px; gap: 8px; }
   .platform-chip { width: 27px; height: 27px; }
@@ -404,13 +513,13 @@ body {
     </div>
   </button>
   <button type="button" class="header-title-btn" onclick="goHome()" aria-label="Reload page">
-    <h1>ALL MEDIA <span>DOWNLOADER</span></h1>
+    <h1><span class="h1-main">ALL MEDIA</span> <span class="h1-accent">DOWNLOADER</span></h1>
   </button>
   <p>Facebook Instagram TikTok Video Downloader</p>
   <div class="platform-row">
-    <span class="platform-chip"><i class="fa-brands fa-tiktok"></i></span>
-    <span class="platform-chip"><i class="fa-brands fa-instagram"></i></span>
     <span class="platform-chip"><i class="fa-brands fa-facebook-f"></i></span>
+    <span class="platform-chip"><i class="fa-brands fa-instagram"></i></span>
+    <span class="platform-chip"><i class="fa-brands fa-tiktok"></i></span>
   </div>
 </div>
 
@@ -435,6 +544,12 @@ body {
       </div>
     </div>
     <div class="url-hint" id="urlHint"><i class="fa-solid fa-circle-info"></i><span>Paste a link and the video loads automatically</span></div>
+
+    <!-- Manual paste fallback: shown when clipboard API is blocked/unavailable -->
+    <div class="manual-paste-wrap" id="manualPasteWrap">
+      <div class="manual-paste-label"><i class="fa-solid fa-keyboard"></i> Clipboard access is blocked — paste manually below</div>
+      <textarea class="manual-paste-box" id="manualPasteBox" placeholder="Long-press and paste your link here..." oninput="onManualPasteInput()"></textarea>
+    </div>
   </div>
 </div>
 
@@ -463,6 +578,10 @@ body {
       <div style="padding:16px 16px 0">
         <div class="thumb-wrap" id="thumbWrap">
           <img id="thumbImg" src="" alt="" style="display:none">
+          <div class="thumb-fallback" id="thumbFallback">
+            <i class="fa-solid fa-image-slash"></i>
+            <span>Preview unavailable</span>
+          </div>
           <span class="thumb-duration" id="thumbDuration"></span>
           <span class="thumb-platform-badge" id="thumbPlatformBadge"><i class="fa-solid fa-circle" id="platformIcon"></i><span id="platformText"></span></span>
         </div>
@@ -490,6 +609,7 @@ body {
             <span id="dlProgressSize"></span>
           </div>
         </div>
+        <button class="dl-cancel-btn" id="dlCancelBtn" onclick="cancelDownload()"><i class="fa-solid fa-xmark"></i> Cancel Download</button>
       </div>
     </div>
   </div>
@@ -519,12 +639,15 @@ const urlInputRow = $('urlInputRow');
 const urlFieldIcon = $('urlFieldIcon');
 const urlStatusIcon = $('urlStatusIcon');
 const urlHint = $('urlHint');
+const manualPasteWrap = $('manualPasteWrap');
+const manualPasteBox = $('manualPasteBox');
 
 const skelBlock = $('skelBlock');
 const emptyBlock = $('emptyBlock');
 const panelContent = $('panelContent');
 
 const thumbImg = $('thumbImg');
+const thumbFallback = $('thumbFallback');
 const thumbDuration = $('thumbDuration');
 const platformIcon = $('platformIcon');
 const platformText = $('platformText');
@@ -543,11 +666,17 @@ const dlProgressWrap = $('dlProgressWrap');
 const dlProgressFill = $('dlProgressFill');
 const dlProgressPct = $('dlProgressPct');
 const dlProgressSize = $('dlProgressSize');
+const dlCancelBtn = $('dlCancelBtn');
 const statusBox = $('statusBox');
 
 let currentResult = null;
 let currentPlatform = null;
+let currentUrl = null;
 let fetchDebounce = null;
+
+// AbortControllers so in-flight requests can be cancelled (page navigation / cancel button / superseded fetch)
+let infoAbortController = null;
+let downloadAbortController = null;
 
 $('footerYear').textContent = new Date().getFullYear();
 
@@ -598,7 +727,9 @@ function resetPanel() {
   hideStatus();
   currentResult = null;
   currentPlatform = null;
+  currentUrl = null;
   urlStatusIcon.classList.remove('show');
+  if (infoAbortController) { infoAbortController.abort(); infoAbortController = null; }
 }
 
 function onUrlInput() {
@@ -628,38 +759,71 @@ function onUrlInput() {
   fetchDebounce = setTimeout(() => fetchInfo(val, platform), 450);
 }
 
+// Manual paste fallback — used when clipboard API is unavailable/blocked
+function onManualPasteInput() {
+  const val = manualPasteBox.value.trim();
+  if (!val) return;
+  urlInput.value = val;
+  manualPasteBox.value = '';
+  manualPasteWrap.classList.remove('show');
+  onUrlInput();
+}
+
 async function pasteUrl() {
   if (pasteBtn.disabled) return;
+
   if (!navigator.clipboard || !navigator.clipboard.readText) {
-    setHint('<i class="fa-solid fa-triangle-exclamation"></i><span>Clipboard access isn\'t available here (needs HTTPS). Please paste manually.</span>', true);
-    urlInput.focus();
+    manualPasteWrap.classList.add('show');
+    setHint('<i class="fa-solid fa-triangle-exclamation"></i><span>Clipboard access isn\'t available here (needs HTTPS). Use the box below instead.</span>', true);
+    manualPasteBox.focus();
     return;
   }
   try {
     const text = await navigator.clipboard.readText();
+    if (!text || !text.trim()) {
+      manualPasteWrap.classList.add('show');
+      setHint('<i class="fa-solid fa-triangle-exclamation"></i><span>Clipboard looks empty. Paste manually below.</span>', true);
+      manualPasteBox.focus();
+      return;
+    }
+    manualPasteWrap.classList.remove('show');
     urlInput.value = text.trim();
     onUrlInput();
   } catch (e) {
-    setHint('<i class="fa-solid fa-triangle-exclamation"></i><span>Couldn\'t read clipboard — check site permissions and paste manually.</span>', true);
-    urlInput.focus();
+    // Permission denied or blocked — fall back to a manual textarea the user can paste into
+    manualPasteWrap.classList.add('show');
+    setHint('<i class="fa-solid fa-triangle-exclamation"></i><span>Clipboard permission blocked — use the box below to paste manually.</span>', true);
+    manualPasteBox.focus();
   }
 }
 
 function clearUrl() {
   urlInput.value = '';
+  manualPasteBox.value = '';
+  manualPasteWrap.classList.remove('show');
   urlInputRow.classList.remove('valid', 'invalid');
   setHint('<i class="fa-solid fa-circle-info"></i><span>Paste a link and the video loads automatically</span>', false);
   resetPanel();
 }
 
 function hideStatus() { statusBox.className = 'status-box'; statusBox.innerHTML = ''; }
-function showStatus(msg, type, icon) {
-  statusBox.innerHTML = `<i class="fa-solid ${icon || 'fa-circle-exclamation'}"></i><span>${msg}</span>`;
+function showStatus(msg, type, icon, retryFn) {
+  const retryHtml = retryFn ? `<button type="button" class="retry-link" id="statusRetryBtn">Retry</button>` : '';
+  statusBox.innerHTML = `<i class="fa-solid ${icon || 'fa-circle-exclamation'}"></i><span>${msg}</span>${retryHtml}`;
   statusBox.className = 'status-box show ' + (type || '');
+  if (retryFn) {
+    $('statusRetryBtn').onclick = retryFn;
+  }
 }
 
-async function fetchInfo(url, platform) {
+async function fetchInfo(url, platform, isRetry) {
+  // cancel any previous in-flight info request before starting a new one
+  if (infoAbortController) infoAbortController.abort();
+  infoAbortController = new AbortController();
+  const { signal } = infoAbortController;
+
   currentPlatform = platform;
+  currentUrl = url;
   skelBlock.style.display = '';
   emptyBlock.style.display = 'none';
   panelContent.classList.remove('show');
@@ -671,8 +835,9 @@ async function fetchInfo(url, platform) {
   try {
     let res;
     try {
-      res = await fetch(`${API_BASE}/api/download?url=${encodeURIComponent(url)}&api_key=${API_KEY}`);
+      res = await fetch(`${API_BASE}/api/download?url=${encodeURIComponent(url)}&api_key=${API_KEY}`, { signal });
     } catch (networkErr) {
+      if (networkErr.name === 'AbortError') return; // superseded — silently stop
       throw new Error('Could not reach the download server. Check your connection and try again.');
     }
 
@@ -688,9 +853,11 @@ async function fetchInfo(url, platform) {
     skelBlock.style.display = 'none';
     panelContent.classList.add('show');
   } catch (err) {
+    if (err.name === 'AbortError') return;
     skelBlock.style.display = 'none';
     emptyBlock.style.display = '';
     setHint(`<i class="fa-solid fa-triangle-exclamation"></i><span>${escapeHtml(err.message)}</span>`, true);
+    showStatus(err.message, 'error', 'fa-triangle-exclamation', () => fetchInfo(url, platform, true));
   } finally {
     urlStatusIcon.classList.remove('show');
     pasteBtn.disabled = false;
@@ -711,11 +878,19 @@ function renderResult(data, platform) {
   platformIcon.className = meta.icon;
   platformText.textContent = meta.label;
 
+  // Thumbnail with fallback placeholder on load failure
+  thumbFallback.style.display = 'none';
+  thumbImg.onerror = null;
   if (data.thumbnail_url) {
-    thumbImg.src = data.thumbnail_url;
     thumbImg.style.display = '';
+    thumbImg.onerror = () => {
+      thumbImg.style.display = 'none';
+      thumbFallback.style.display = 'flex';
+    };
+    thumbImg.src = data.thumbnail_url;
   } else {
     thumbImg.style.display = 'none';
+    thumbFallback.style.display = 'flex';
   }
 
   dlBtn.disabled = false;
@@ -796,8 +971,20 @@ function formatBytes(bytes) {
   return `${val.toFixed(val < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
 }
 
-async function downloadVideo() {
+function cancelDownload() {
+  if (downloadAbortController) {
+    downloadAbortController.abort();
+  }
+}
+
+async function downloadVideo(isRetry) {
   if (!currentResult) return;
+
+  // cancel any previous in-flight download before starting a new one
+  if (downloadAbortController) downloadAbortController.abort();
+  downloadAbortController = new AbortController();
+  const { signal } = downloadAbortController;
+
   dlBtn.disabled = true;
   dlBtnIcon.className = 'fa-solid fa-spinner fa-spin';
   dlBtnText.textContent = 'Preparing...';
@@ -807,6 +994,7 @@ async function downloadVideo() {
   dlProgressFill.style.width = '';
   dlProgressPct.textContent = '';
   dlProgressSize.textContent = '';
+  dlCancelBtn.classList.add('show');
 
   try {
     let fetchUrl;
@@ -818,7 +1006,7 @@ async function downloadVideo() {
       throw new Error('No video source returned for this link.');
     }
 
-    const res = await fetch(fetchUrl);
+    const res = await fetch(fetchUrl, { signal });
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
       throw new Error(friendlyDownloadError(res.status, errData));
@@ -827,7 +1015,7 @@ async function downloadVideo() {
     dlBtnText.textContent = 'Downloading...';
 
     const totalBytes = parseInt(res.headers.get('Content-Length') || '0', 10);
-    const blob = await readWithProgress(res, totalBytes);
+    const blob = await readWithProgress(res, totalBytes, signal);
 
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -843,11 +1031,17 @@ async function downloadVideo() {
     dlProgressPct.textContent = '100%';
     showStatus('Downloaded — check your device\'s downloads folder.', 'success', 'fa-circle-check');
   } catch (err) {
-    showStatus(err.message, 'error', 'fa-triangle-exclamation');
+    if (err.name === 'AbortError') {
+      showStatus('Download cancelled.', 'warn', 'fa-circle-info');
+    } else {
+      showStatus(err.message, 'error', 'fa-triangle-exclamation', () => downloadVideo(true));
+    }
   } finally {
+    downloadAbortController = null;
     dlBtn.disabled = false;
     dlBtnIcon.className = 'fa-solid fa-download';
     dlBtnText.textContent = 'Download Video';
+    dlCancelBtn.classList.remove('show');
     setTimeout(() => {
       dlProgressWrap.classList.remove('show');
       dlProgressFill.classList.remove('indeterminate');
@@ -856,7 +1050,7 @@ async function downloadVideo() {
   }
 }
 
-async function readWithProgress(res, totalBytes) {
+async function readWithProgress(res, totalBytes, signal) {
   if (!res.body || !res.body.getReader) {
     return await res.blob();
   }
@@ -869,20 +1063,33 @@ async function readWithProgress(res, totalBytes) {
     dlProgressFill.classList.remove('indeterminate');
   }
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    received += value.length;
+  // If the user cancels mid-stream, cancel the underlying reader too
+  const onAbort = () => { reader.cancel().catch(() => {}); };
+  if (signal) signal.addEventListener('abort', onAbort);
 
-    if (totalBytes > 0) {
-      const pct = Math.min(100, Math.round((received / totalBytes) * 100));
-      dlProgressFill.style.width = pct + '%';
-      dlProgressPct.textContent = pct + '%';
-      dlProgressSize.textContent = `${formatBytes(received)} / ${formatBytes(totalBytes)}`;
-    } else {
-      dlProgressSize.textContent = formatBytes(received);
+  try {
+    while (true) {
+      if (signal && signal.aborted) {
+        const abortErr = new Error('Download cancelled');
+        abortErr.name = 'AbortError';
+        throw abortErr;
+      }
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.length;
+
+      if (totalBytes > 0) {
+        const pct = Math.min(100, Math.round((received / totalBytes) * 100));
+        dlProgressFill.style.width = pct + '%';
+        dlProgressPct.textContent = pct + '%';
+        dlProgressSize.textContent = `${formatBytes(received)} / ${formatBytes(totalBytes)}`;
+      } else {
+        dlProgressSize.textContent = formatBytes(received);
+      }
     }
+  } finally {
+    if (signal) signal.removeEventListener('abort', onAbort);
   }
 
   return new Blob(chunks);
@@ -896,7 +1103,94 @@ function friendlyDownloadError(status, errData) {
   return 'The source rejected this download. Please try again.';
 }
 
+// Abort any in-flight requests if the user leaves/reloads the page
+window.addEventListener('pagehide', () => {
+  if (infoAbortController) infoAbortController.abort();
+  if (downloadAbortController) downloadAbortController.abort();
+});
+
 resetPanel();
+
+/* ─── PWA: Service Worker registration ─── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .catch((err) => console.warn('SW registration failed:', err));
+  });
+}
+
+/* ─── PWA: Install prompt ─── */
+let deferredInstallPrompt = null;
+const installBar = document.createElement('div');
+installBar.id = 'installBar';
+installBar.innerHTML = `
+  <div class="install-bar-left">
+    <i class="fa-solid fa-download"></i>
+    <span>Install All Media Downloader as an app</span>
+  </div>
+  <div class="install-bar-actions">
+    <button id="installBtn" type="button">Install</button>
+    <button id="installDismissBtn" type="button" aria-label="Dismiss"><i class="fa-solid fa-xmark"></i></button>
+  </div>`;
+document.body.appendChild(installBar);
+
+const installStyle = document.createElement('style');
+installStyle.textContent = `
+#installBar{
+  position:fixed; left:12px; right:12px; bottom:12px; z-index:999;
+  display:none; align-items:center; justify-content:space-between; gap:10px;
+  background:rgba(28,28,30,0.75); border:1px solid rgba(255,255,255,0.14);
+  backdrop-filter:blur(20px) saturate(180%); -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-radius:14px; padding:12px 12px 12px 14px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+  animation:installBarUp .4s cubic-bezier(.25,.46,.45,.94);
+}
+#installBar.show{ display:flex; }
+@keyframes installBarUp{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+.install-bar-left{ display:flex; align-items:center; gap:10px; font-size:12.5px; color:#fff; font-weight:500; }
+.install-bar-left i{ color:#0A84FF; font-size:14px; flex-shrink:0; }
+.install-bar-actions{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+#installBtn{
+  background:rgba(10,132,255,.18); border:1px solid rgba(10,132,255,.4);
+  color:#0A84FF; font-weight:700; font-size:12px; padding:8px 14px;
+  border-radius:9px; cursor:pointer; font-family:inherit;
+}
+#installBtn:active{ opacity:.7; }
+#installDismissBtn{
+  background:none; border:none; color:rgba(235,235,245,.4);
+  font-size:13px; cursor:pointer; padding:6px;
+}
+@media (max-width:420px){
+  .install-bar-left span{ font-size:11.5px; }
+}
+`;
+document.head.appendChild(installStyle);
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!localStorage.getItem('amd_install_dismissed')) {
+    installBar.classList.add('show');
+  }
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  installBar.classList.remove('show');
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+});
+
+document.getElementById('installDismissBtn').addEventListener('click', () => {
+  installBar.classList.remove('show');
+  localStorage.setItem('amd_install_dismissed', '1');
+});
+
+window.addEventListener('appinstalled', () => {
+  installBar.classList.remove('show');
+  deferredInstallPrompt = null;
+});
 </script>
 
 </body>
