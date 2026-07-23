@@ -122,71 +122,36 @@
   .retry-btn:active i{ transform: rotate(180deg); }
   .retry-btn.spinning i{ animation: spin .7s linear infinite; }
   @keyframes spin{ to{ transform: rotate(360deg); } }
-
-  /* ── status pill ── */
-  .status{
-    margin-top:22px; display:inline-flex; align-items:center; gap:7px;
-    font-size:11px; color:var(--text4); font-weight:500;
-    background: var(--glass-bg); border:1px solid var(--glass-border);
-    padding:7px 13px 7px 11px; border-radius:100px;
-    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
-    transition: color .25s ease;
-  }
-  .dot{
-    width:6px; height:6px; border-radius:50%;
-    background: var(--err);
-    box-shadow: 0 0 8px rgba(255,69,58,.6);
-    transition: background .25s ease, box-shadow .25s ease;
-  }
-  .dot.online{
-    background: var(--green);
-    box-shadow: 0 0 8px rgba(48,209,88,.6);
-    animation: dotBlink 1.6s ease-in-out infinite;
-  }
-  @keyframes dotBlink{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
-  .status.online-text{ color: var(--green); }
-
-  /* ── brand footer ── */
-  .brand{
-    position:fixed; bottom:22px; left:0; right:0;
-    display:flex; align-items:center; justify-content:center; gap:6px;
-    font-size:10.5px; color:var(--text4); letter-spacing:.3px;
-  }
-  .brand i{ color: var(--accent); font-size:9px; }
 </style>
 </head>
 <body>
 
   <div class="icon-ring">
-    <div class="icon-box"><i class="fa-solid fa-wifi"></i></div>
+    <div class="icon-box"><i class="fa-solid fa-wifi" id="wifiIcon"></i></div>
   </div>
 
-  <h1>You're Offline</h1>
-  <p>No internet connection found. Check your connection and try again — your last visited page may still be cached.</p>
+  <h1 id="statusHeading">You're Offline</h1>
+  <p id="statusMessage">No internet connection found. Check your connection and try again — your last visited page may still be cached.</p>
 
   <button type="button" class="retry-btn" id="retryBtn">
     <i class="fa-solid fa-rotate-right" id="retryIcon"></i><span id="retryLabel">Try Again</span>
   </button>
 
-  <div class="status" id="statusPill">
-    <span class="dot" id="statusDot"></span><span id="statusText">Offline</span>
-  </div>
-
-  <div class="brand"><i class="fa-solid fa-circle"></i><span>CODEX-M41NUL</span></div>
-
   <script>
-    const dot = document.getElementById('statusDot');
-    const text = document.getElementById('statusText');
-    const pill = document.getElementById('statusPill');
+    const heading = document.getElementById('statusHeading');
+    const message = document.getElementById('statusMessage');
+    const wifiIcon = document.getElementById('wifiIcon');
     const retryBtn = document.getElementById('retryBtn');
-    const retryIcon = document.getElementById('retryIcon');
     const retryLabel = document.getElementById('retryLabel');
 
     function updateStatus(){
       const online = navigator.onLine;
-      dot.classList.toggle('online', online);
-      pill.classList.toggle('online-text', online);
-      text.textContent = online ? 'Back online — tap Try Again' : 'Offline';
+      heading.textContent = online ? "You're Online" : "You're Offline";
+      message.textContent = online
+        ? 'Connection restored. Tap below to reload the app.'
+        : "No internet connection found. Check your connection and try again — your last visited page may still be cached.";
+      wifiIcon.classList.toggle('fa-wifi', online);
+      wifiIcon.classList.toggle('fa-wifi-slash', !online);
     }
     window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
