@@ -7,7 +7,6 @@
 <meta name="theme-color" content="#0A84FF">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root{
     --bg:#000;
@@ -75,10 +74,18 @@
     0%,100%{ box-shadow: 0 10px 30px rgba(10,132,255,.18), inset 0 1px 0 rgba(255,255,255,.12); }
     50%{ box-shadow: 0 10px 40px rgba(10,132,255,.4), inset 0 1px 0 rgba(255,255,255,.16); }
   }
-  .icon-box i{
-    font-size:30px;
-    background: linear-gradient(180deg, #59c8ff, #0A84FF);
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  .icon-box svg{
+    color: var(--err);
+    transition: color .3s ease;
+  }
+  .icon-box.online svg{ color: var(--green); }
+  .icon-box.online{
+    box-shadow:
+      0 10px 30px rgba(48,209,88,.22),
+      inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .icon-ring.online::before, .icon-ring.online::after{
+    border-color: rgba(48,209,88,.28);
   }
 
   h1{
@@ -110,34 +117,47 @@
     transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
     overflow:hidden;
   }
-  .retry-btn i{ color:#59c8ff; font-size:13px; transition: transform .4s ease; }
+  .retry-btn svg{ color:#59c8ff; transition: transform .4s ease; }
   .retry-btn:active{
     transform: scale(.96);
     background: linear-gradient(180deg, rgba(10,132,255,.32), rgba(10,132,255,.2));
     box-shadow: 0 3px 12px rgba(10,132,255,.28), inset 0 1px 0 rgba(255,255,255,.1);
   }
-  .retry-btn:active i{ transform: rotate(180deg); }
-  .retry-btn.spinning i{ animation: spin .7s linear infinite; }
+  .retry-btn:active svg{ transform: rotate(180deg); }
+  .retry-btn.spinning svg{ animation: spin .7s linear infinite; }
   @keyframes spin{ to{ transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-  <div class="icon-ring">
-    <div class="icon-box"><i class="fa-solid fa-wifi" id="wifiIcon"></i></div>
+  <div class="icon-ring" id="iconRing">
+    <div class="icon-box" id="iconBox">
+      <svg id="wifiIcon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+    </div>
   </div>
 
   <h1 id="statusHeading">You're Offline</h1>
   <p id="statusMessage">No internet connection found. Check your connection and try again — your last visited page may still be cached.</p>
 
   <button type="button" class="retry-btn" id="retryBtn">
-    <i class="fa-solid fa-rotate-right" id="retryIcon"></i><span id="retryLabel">Try Again</span>
+    <svg id="retryIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"></polyline>
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+    </svg>
+    <span id="retryLabel">Try Again</span>
   </button>
 
   <script>
     const heading = document.getElementById('statusHeading');
     const message = document.getElementById('statusMessage');
     const wifiIcon = document.getElementById('wifiIcon');
+    const iconBox = document.getElementById('iconBox');
+    const iconRing = document.getElementById('iconRing');
     const retryBtn = document.getElementById('retryBtn');
     const retryLabel = document.getElementById('retryLabel');
 
@@ -147,8 +167,8 @@
       message.textContent = online
         ? 'Connection restored. Tap below to reload the app.'
         : "No internet connection found. Check your connection and try again — your last visited page may still be cached.";
-      wifiIcon.classList.toggle('fa-wifi', online);
-      wifiIcon.classList.toggle('fa-wifi-slash', !online);
+      iconBox.classList.toggle('online', online);
+      iconRing.classList.toggle('online', online);
     }
     window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
