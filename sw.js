@@ -1,6 +1,6 @@
 // Bump this version any time you update index.html / cached assets,
 // otherwise users will keep getting the old cached version.
-const CACHE_VERSION = 'amd-v1';
+const CACHE_VERSION = 'amd-v2';
 const CACHE_NAME = `all-media-downloader-${CACHE_VERSION}`;
 
 // Only cache same-origin app shell files here.
@@ -36,7 +36,8 @@ self.addEventListener('activate', (event) => {
 
 // Fetch strategy:
 // - Never touch API requests (video fetch/proxy-video/etc) — always go to network.
-// - For navigation requests (page loads): network first, fall back to cache, then offline.html.
+// - For navigation requests (page loads): network first, and if the network fails,
+//   ALWAYS show offline.html (never silently serve a stale cached page instead).
 // - For other same-origin static assets: cache first, fall back to network.
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -59,9 +60,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
           return res;
         })
-        .catch(() =>
-          caches.match(req).then((cached) => cached || caches.match('/offline.html'))
-        )
+        .catch(() => caches.match('/offline.html'))
     );
     return;
   }
