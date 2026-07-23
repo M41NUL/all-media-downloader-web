@@ -38,7 +38,6 @@
   --radius-lg: 18px;
   --radius-xl: 22px;
 
-  /* glass tokens — reuse existing colors as translucent glass surfaces */
   --glass-bg: rgba(28,28,30,0.45);
   --glass-bg-strong: rgba(28,28,30,0.6);
   --glass-border: rgba(255,255,255,0.10);
@@ -58,7 +57,6 @@ body {
   overscroll-behavior-y: contain;
 }
 
-/* ─── HEADER ─── */
 .header { padding: 44px 20px 0; text-align: center; }
 .header-logo-link { display: inline-block; cursor: pointer; border: none; background: none; padding: 0; }
 .header-logo {
@@ -77,7 +75,6 @@ body {
 .header-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .header-title-btn { cursor: pointer; border: none; background: none; padding: 0; display: block; width: 100%; color: inherit; font: inherit; text-align: inherit; }
 
-/* Stylish header title */
 .header h1 {
   font-family: 'Orbitron', 'Poppins', -apple-system, sans-serif;
   font-size: 22px;
@@ -139,7 +136,6 @@ body {
   margin-top: 16px;
 }
 
-/* Breathing glow animation for platform icons */
 .platform-chip {
   display: flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; border-radius: 9px;
@@ -160,7 +156,6 @@ body {
   }
 }
 
-/* ─── SECTION ─── */
 .section { margin: 28px 16px 0; }
 .section-label {
   font-size: 12px; font-weight: 600; color: var(--text3);
@@ -170,7 +165,6 @@ body {
 }
 .section-label i { font-size: 11px; color: var(--accent); }
 
-/* ─── URL CARD ─── */
 .url-card {
   background: var(--glass-bg);
   border-radius: var(--radius-lg);
@@ -261,7 +255,6 @@ body {
 .url-hint.error-hint { color: var(--err); }
 .url-hint.error-hint i { color: var(--err); }
 
-/* manual paste fallback (shown when clipboard API fails) */
 .manual-paste-wrap { display: none; padding: 0 16px 14px; }
 .manual-paste-wrap.show { display: block; }
 .manual-paste-box {
@@ -277,7 +270,6 @@ body {
   display: flex; align-items: center; gap: 5px;
 }
 
-/* ─── CONTROL PANEL ─── */
 .panel-card {
   background: var(--glass-bg); border-radius: var(--radius-lg);
   border: 1px solid var(--glass-border-hi); overflow: hidden;
@@ -286,7 +278,6 @@ body {
   box-shadow: 0 4px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.1);
 }
 
-/* skeleton loader */
 .skel { position: relative; overflow: hidden; background: rgba(255,255,255,0.04); border-radius: 8px; }
 .skel::after {
   content: ''; position: absolute; inset: 0;
@@ -303,7 +294,6 @@ body {
 .skel-line.w40 { width: 40%; }
 .skel-line.w90 { width: 90%; }
 
-/* panel content (after load) */
 .panel-content { display: none; }
 .panel-content.show { display: block; }
 .thumb-wrap {
@@ -407,7 +397,6 @@ body {
 .dl-cancel-btn.show { display: flex; }
 .dl-cancel-btn:active { opacity: .7; }
 
-/* ─── STATUS ─── */
 .status-box {
   display: none; align-items: flex-start; gap: 9px;
   font-size: 12.5px; padding: 12px 13px; border-radius: 11px; margin-top: 14px;
@@ -427,7 +416,6 @@ body {
   font-weight: 700; cursor: pointer; font-family: inherit; padding: 0;
 }
 
-/* ─── FOOTER ─── */
 .footer {
   padding: 28px 20px 40px; display: flex; flex-direction: column;
   align-items: center; gap: 14px;
@@ -449,7 +437,6 @@ body {
 .footer-link i { font-size: 11px; flex-shrink: 0; }
 .footer-copy { font-size: 11px; color: var(--text4); text-align: center; line-height: 1.6; }
 
-/* ─── ANIMATIONS ─── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -460,7 +447,6 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ─── MOBILE POLISH ─── */
 @media (max-width: 420px) {
   .header { padding: 32px 16px 0; }
   .header-logo { width: 54px; height: 54px; border-radius: 15px; margin-bottom: 12px; }
@@ -505,7 +491,6 @@ body {
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header fade-up">
   <button type="button" class="header-logo-link" onclick="goHome()" aria-label="Reload page">
     <div class="header-logo">
@@ -523,7 +508,6 @@ body {
   </div>
 </div>
 
-<!-- URL INPUT -->
 <div class="section fade-up-2">
   <div class="section-label"><i class="fa-solid fa-link"></i>Video URL</div>
   <div class="url-card">
@@ -545,7 +529,6 @@ body {
     </div>
     <div class="url-hint" id="urlHint"><i class="fa-solid fa-circle-info"></i><span>Paste a link and the video loads automatically</span></div>
 
-    <!-- Manual paste fallback: shown when clipboard API is blocked/unavailable -->
     <div class="manual-paste-wrap" id="manualPasteWrap">
       <div class="manual-paste-label"><i class="fa-solid fa-keyboard"></i> Clipboard access is blocked — paste manually below</div>
       <textarea class="manual-paste-box" id="manualPasteBox" placeholder="Long-press and paste your link here..." oninput="onManualPasteInput()"></textarea>
@@ -553,19 +536,16 @@ body {
   </div>
 </div>
 
-<!-- CONTROL PANEL -->
 <div class="section fade-up-3">
   <div class="section-label"><i class="fa-solid fa-film"></i>Video Preview</div>
   <div class="panel-card">
 
-    <!-- skeleton (loading state) -->
     <div class="skel-block" id="skelBlock" style="display:none">
       <div class="skel skel-thumb"></div>
       <div class="skel skel-line w90"></div>
       <div class="skel skel-line w40"></div>
     </div>
 
-    <!-- empty state -->
     <div class="skel-block" id="emptyBlock">
       <div style="text-align:center;padding:26px 10px;color:var(--text4)">
         <i class="fa-solid fa-film" style="font-size:26px;margin-bottom:10px;display:block;opacity:.4"></i>
@@ -573,7 +553,6 @@ body {
       </div>
     </div>
 
-    <!-- loaded content -->
     <div class="panel-content" id="panelContent">
       <div style="padding:16px 16px 0">
         <div class="thumb-wrap" id="thumbWrap">
@@ -597,7 +576,6 @@ body {
         </button>
       </div>
 
-      <!-- download action lives inside the panel, right under the preview -->
       <div style="padding:16px;">
         <button class="url-btn accent" style="width:100%;padding:12px 8px;font-size:13px;" id="dlBtn" onclick="downloadVideo()">
           <i class="fa-solid fa-download" id="dlBtnIcon"></i><span id="dlBtnText">Download Video</span>
@@ -617,7 +595,6 @@ body {
   <div class="status-box" id="statusBox"></div>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-links">
     <a class="footer-link" href="https://github.com/M41NUL" target="_blank"><i class="fa-brands fa-github"></i> M41NUL</a>
@@ -674,7 +651,6 @@ let currentPlatform = null;
 let currentUrl = null;
 let fetchDebounce = null;
 
-// AbortControllers so in-flight requests can be cancelled (page navigation / cancel button / superseded fetch)
 let infoAbortController = null;
 let downloadAbortController = null;
 
@@ -759,7 +735,6 @@ function onUrlInput() {
   fetchDebounce = setTimeout(() => fetchInfo(val, platform), 450);
 }
 
-// Manual paste fallback — used when clipboard API is unavailable/blocked
 function onManualPasteInput() {
   const val = manualPasteBox.value.trim();
   if (!val) return;
@@ -790,7 +765,6 @@ async function pasteUrl() {
     urlInput.value = text.trim();
     onUrlInput();
   } catch (e) {
-    // Permission denied or blocked — fall back to a manual textarea the user can paste into
     manualPasteWrap.classList.add('show');
     setHint('<i class="fa-solid fa-triangle-exclamation"></i><span>Clipboard permission blocked — use the box below to paste manually.</span>', true);
     manualPasteBox.focus();
@@ -817,7 +791,6 @@ function showStatus(msg, type, icon, retryFn) {
 }
 
 async function fetchInfo(url, platform, isRetry) {
-  // cancel any previous in-flight info request before starting a new one
   if (infoAbortController) infoAbortController.abort();
   infoAbortController = new AbortController();
   const { signal } = infoAbortController;
@@ -837,7 +810,7 @@ async function fetchInfo(url, platform, isRetry) {
     try {
       res = await fetch(`${API_BASE}/api/download?url=${encodeURIComponent(url)}&api_key=${API_KEY}`, { signal });
     } catch (networkErr) {
-      if (networkErr.name === 'AbortError') return; // superseded — silently stop
+      if (networkErr.name === 'AbortError') return;
       throw new Error('Could not reach the download server. Check your connection and try again.');
     }
 
@@ -878,7 +851,6 @@ function renderResult(data, platform) {
   platformIcon.className = meta.icon;
   platformText.textContent = meta.label;
 
-  // Thumbnail with fallback placeholder on load failure
   thumbFallback.style.display = 'none';
   thumbImg.onerror = null;
   if (data.thumbnail_url) {
@@ -980,7 +952,6 @@ function cancelDownload() {
 async function downloadVideo(isRetry) {
   if (!currentResult) return;
 
-  // cancel any previous in-flight download before starting a new one
   if (downloadAbortController) downloadAbortController.abort();
   downloadAbortController = new AbortController();
   const { signal } = downloadAbortController;
@@ -1063,7 +1034,6 @@ async function readWithProgress(res, totalBytes, signal) {
     dlProgressFill.classList.remove('indeterminate');
   }
 
-  // If the user cancels mid-stream, cancel the underlying reader too
   const onAbort = () => { reader.cancel().catch(() => {}); };
   if (signal) signal.addEventListener('abort', onAbort);
 
@@ -1103,7 +1073,6 @@ function friendlyDownloadError(status, errData) {
   return 'The source rejected this download. Please try again.';
 }
 
-// Abort any in-flight requests if the user leaves/reloads the page
 window.addEventListener('pagehide', () => {
   if (infoAbortController) infoAbortController.abort();
   if (downloadAbortController) downloadAbortController.abort();
@@ -1111,7 +1080,6 @@ window.addEventListener('pagehide', () => {
 
 resetPanel();
 
-/* ─── PWA: Service Worker registration ─── */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -1119,7 +1087,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* ─── PWA: Install prompt ─── */
 let deferredInstallPrompt = null;
 const installBar = document.createElement('div');
 installBar.id = 'installBar';
@@ -1166,42 +1133,49 @@ installStyle.textContent = `
 `;
 document.head.appendChild(installStyle);
 
+function isAppInstalled() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
   console.log('[PWA] beforeinstallprompt fired — app is installable');
-  if (!localStorage.getItem('amd_install_dismissed')) {
-    installBar.classList.add('show');
-  } else {
-    console.log('[PWA] Install bar suppressed — previously dismissed (localStorage amd_install_dismissed)');
-  }
-});
 
-// Helpful diagnostics in the console for checking install state manually
-window.addEventListener('load', () => {
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if (isStandalone) {
-    console.log('[PWA] Already running as installed app — install bar will not show.');
-  } else if (!deferredInstallPrompt) {
-    console.log('[PWA] Not installable yet (event not fired). Chrome only fires beforeinstallprompt once per session and may withhold it on repeat visits. Run localStorage.removeItem("amd_install_dismissed") and hard-reload if you dismissed it before.');
+  if (isAppInstalled()) {
+    console.log('[PWA] Already installed — not showing bar.');
+    return;
   }
+  if (localStorage.getItem('amd_installed')) {
+    console.log('[PWA] Already installed previously — not showing bar again.');
+    return;
+  }
+  if (sessionStorage.getItem('amd_install_dismissed')) {
+    console.log('[PWA] Dismissed this visit — will show again next time the site is opened.');
+    return;
+  }
+  installBar.classList.add('show');
 });
 
 document.getElementById('installBtn').addEventListener('click', async () => {
   if (!deferredInstallPrompt) return;
   installBar.classList.remove('show');
   deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
+  const choice = await deferredInstallPrompt.userChoice;
+  if (choice.outcome === 'accepted') {
+    localStorage.setItem('amd_installed', '1');
+  }
   deferredInstallPrompt = null;
 });
 
 document.getElementById('installDismissBtn').addEventListener('click', () => {
   installBar.classList.remove('show');
-  localStorage.setItem('amd_install_dismissed', '1');
+  sessionStorage.setItem('amd_install_dismissed', '1');
 });
 
 window.addEventListener('appinstalled', () => {
   installBar.classList.remove('show');
+  localStorage.setItem('amd_installed', '1');
   deferredInstallPrompt = null;
 });
 </script>
