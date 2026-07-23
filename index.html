@@ -862,7 +862,6 @@ async function fetchInfo(url, platform, isRetry) {
     if (err.name === 'AbortError') return;
     skelBlock.style.display = 'none';
     emptyBlock.style.display = '';
-    setHint(`<i class="fa-solid fa-triangle-exclamation"></i><span>${escapeHtml(err.message)}</span>`, true);
     showStatus(err.message, 'error', 'fa-triangle-exclamation', () => fetchInfo(url, platform, true));
   } finally {
     urlStatusIcon.classList.remove('show');
