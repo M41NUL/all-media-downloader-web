@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>All Media Downloader</title>
 <meta name="description" content="Facebook Instagram TikTok Video Downloader">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/M41NUL/all-media-downloader/main/img/bot_profile.png">
@@ -61,26 +61,48 @@ body {
 
 #ptrIndicator {
   position: fixed; top: 0; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: center;
-  height: 70px; margin-top: -70px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  gap: 6px;
+  height: 90px; margin-top: -90px;
   z-index: 998; pointer-events: none;
   transition: margin-top .25s ease;
 }
 #ptrIndicator .ptr-circle {
   width: 38px; height: 38px; border-radius: 50%;
-  background: var(--glass-bg); border: 1px solid var(--glass-border-hi);
+  background: var(--glass-bg-strong); border: 1px solid var(--glass-border-hi);
   backdrop-filter: var(--glass-blur-sm);
   -webkit-backdrop-filter: var(--glass-blur-sm);
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 6px 20px rgba(0,0,0,.4);
+  flex-shrink: 0;
+  position: relative;
 }
 #ptrIndicator svg {
   width: 18px; height: 18px; color: var(--accent);
-  transition: transform .2s ease;
+  transition: transform .2s ease, opacity .15s ease;
+}
+#ptrIndicator .ptr-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.18);
+  border-top-color: #59c8ff;
+  border-radius: 50%;
+  display: none;
 }
 #ptrIndicator.ready svg { color: #59c8ff; }
-#ptrIndicator.refreshing svg { animation: ptrSpin .7s linear infinite; }
+#ptrIndicator.refreshing .ptr-arrow { display: none; }
+#ptrIndicator.refreshing .ptr-spinner { display: block; animation: ptrSpin .7s linear infinite; }
 @keyframes ptrSpin { to { transform: rotate(360deg); } }
+.ptr-text {
+  font-size: 11.5px; font-weight: 700; color: var(--text2);
+  opacity: 0; transition: opacity .2s ease;
+  background: var(--glass-bg-strong); border: 1px solid var(--glass-border-hi);
+  padding: 4px 11px; border-radius: 100px;
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#ptrIndicator.refreshing .ptr-text { opacity: 1; }
 
 .header-logo-link { display: inline-block; cursor: pointer; border: none; background: none; padding: 0; }
 .header-logo {
@@ -238,7 +260,7 @@ body {
 .url-input-row.invalid .url-invalid-dot { display: block; }
 .url-input {
   background: transparent; border: none; outline: none;
-  color: var(--text); font-size: 13.5px;
+  color: var(--text); font-size: 16px;
   font-family: 'Menlo','Monaco',monospace; width: 100%;
   padding: 4px 0;
 }
@@ -285,7 +307,7 @@ body {
   width: 100%; min-height: 54px; resize: none;
   background: rgba(0,0,0,0.28); border: 1.5px dashed var(--glass-border-hi);
   border-radius: 10px; padding: 10px 12px; color: var(--text);
-  font-size: 12.5px; font-family: 'Menlo','Monaco',monospace;
+  font-size: 16px; font-family: 'Menlo','Monaco',monospace;
   outline: none;
 }
 .manual-paste-box::placeholder { color: var(--text4); font-family: 'Inter', sans-serif; }
@@ -483,7 +505,7 @@ body {
   .url-input-area { padding: 14px 12px 12px; gap: 9px; }
   .url-input-row { padding: 9px 11px; gap: 8px; }
   .url-field-icon { width: 30px; height: 30px; }
-  .url-input { font-size: 13px; padding: 11px 0; }
+  .url-input { font-size: 16px; padding: 11px 0; }
   .url-actions { gap: 6px; }
   .url-btn { padding: 11px 6px; font-size: 12px; }
   .url-hint { padding: 9px 12px 12px; font-size: 10.5px; }
@@ -517,11 +539,13 @@ body {
 
 <div id="ptrIndicator">
   <div class="ptr-circle">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <svg class="ptr-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="19 12 12 19 5 12"></polyline>
       <line x1="12" y1="19" x2="12" y2="5"></line>
     </svg>
+    <div class="ptr-spinner"></div>
   </div>
+  <span class="ptr-text" id="ptrText"></span>
 </div>
 
 <div class="header fade-up">
@@ -1113,6 +1137,7 @@ window.addEventListener('pagehide', () => {
 resetPanel();
 
 const ptrIndicator = document.getElementById('ptrIndicator');
+const ptrText = document.getElementById('ptrText');
 const PTR_THRESHOLD = 150;
 let ptrStartY = 0;
 let ptrCurrentY = 0;
@@ -1134,7 +1159,7 @@ document.addEventListener('touchmove', (e) => {
 
   if (dist > 0 && window.scrollY === 0) {
     const capped = Math.min(dist * 0.35, 100);
-    ptrIndicator.style.marginTop = `${-70 + capped}px`;
+    ptrIndicator.style.marginTop = `${-90 + capped}px`;
     ptrIndicator.classList.toggle('ready', dist >= PTR_THRESHOLD);
   }
 }, { passive: true });
@@ -1148,10 +1173,11 @@ document.addEventListener('touchend', () => {
   if (dist >= PTR_THRESHOLD) {
     ptrRefreshing = true;
     ptrIndicator.classList.add('refreshing');
-    ptrIndicator.style.marginTop = '10px';
+    ptrIndicator.style.marginTop = '20px';
+    ptrText.textContent = 'Refreshing...';
     setTimeout(() => location.reload(), 300);
   } else {
-    ptrIndicator.style.marginTop = '-70px';
+    ptrIndicator.style.marginTop = '-90px';
     ptrIndicator.classList.remove('ready');
   }
   ptrCurrentY = 0;
